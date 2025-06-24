@@ -23,13 +23,13 @@ A simple and interactive CLI tool to quickly switch package manager registries (
 **Recommended 推荐用法（无需全局安装、使用最新版）：**
 
 ```shell
-npx change-source
+npx @whtg/change-source
 ```
 
 或
 
 ```shell
-npx change-source@latest
+npx @whtg/change-source@latest
 ```
 
 **(Optionally) install globally 也可以全局安装**
@@ -47,41 +47,41 @@ change-source
 ### English
 
 ```shell
-npx change-source            # Interactive registry switch for all (npm/yarn/pnpm)
-npx change-source --npm      # Only switch npm registry
-npx change-source --yarn     # Only switch yarn registry
-npx change-source --pnpm     # Only switch pnpm registry
+npx @whtg/change-source            # Interactive registry switch for all (npm/yarn/pnpm)
+npx @whtg/change-source --npm      # Only switch npm registry
+npx @whtg/change-source --yarn     # Only switch yarn registry
+npx @whtg/change-source --pnpm     # Only switch pnpm registry
 
-npx change-source --all --to taobao    # Switch all sources to Taobao registry
-npx change-source --npm --to official  # Switch npm to official registry
+npx @whtg/change-source --all --to taobao    # Switch all sources to Taobao registry
+npx @whtg/change-source --npm --to official  # Switch npm to official registry
 
-npx change-source --list      # Show available registries
-npx change-source --manual    # Manually input a custom registry URL
+npx @whtg/change-source --list      # Show available registries
+npx @whtg/change-source --manual    # Manually input a custom registry URL
 
-npx change-source --lang en   # Force interface language to English
-npx change-source --lang zh   # 切换为中文界面
+npx @whtg/change-source --lang en   # Force interface language to English
+npx @whtg/change-source --lang zh   # 切换为中文界面
 
-npx change-source --show      # Show current registries for all managers
+npx @whtg/change-source --show      # Show current registries for all managers
 ```
 
 ### 中文
 
 ```shell
-npx change-source            # 进入交互，一键切换全部源
-npx change-source --npm      # 只切换 npm 源
-npx change-source --yarn     # 只切换 yarn 源
-npx change-source --pnpm     # 只切换 pnpm 源
+npx @whtg/change-source            # 进入交互，一键切换全部源
+npx @whtg/change-source --npm      # 只切换 npm 源
+npx @whtg/change-source --yarn     # 只切换 yarn 源
+npx @whtg/change-source --pnpm     # 只切换 pnpm 源
 
-npx change-source --all --to taobao    # 全部切换为淘宝源
-npx change-source --npm --to official  # 只切 npm 源为官方源
+npx @whtg/change-source --all --to taobao    # 全部切换为淘宝源
+npx @whtg/change-source --npm --to official  # 只切 npm 源为官方源
 
-npx change-source --list      # 列出可用源
-npx change-source --manual    # 手动输入自定义源地址
+npx @whtg/change-source --list      # 列出可用源
+npx @whtg/change-source --manual    # 手动输入自定义源地址
 
-npx change-source --lang zh   # 强制切换中文界面
-npx change-source --lang en   # Switch to English interface
+npx @whtg/change-source --lang zh   # 强制切换中文界面
+npx @whtg/change-source --lang en   # Switch to English interface
 
-npx change-source --show      # 查看所有包管理器当前源地址
+npx @whtg/change-source --show      # 查看所有包管理器当前源地址
 ```
 
 ---
