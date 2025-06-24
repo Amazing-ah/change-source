@@ -1,6 +1,6 @@
 {
   "name": "@whtg/change-source",
-  "version": "1.0.1",
+  "version": "1.0.2",
   "description": "A CLI tool to switch registries for npm, yarn, and pnpm easily, supporting both English and Chinese.",
   "main": "src/index.js",
   "module": "src/index.js",

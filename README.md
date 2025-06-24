@@ -35,7 +35,7 @@ npx @whtg/change-source@latest
 **(Optionally) install globally 也可以全局安装**
 
 ```shell
-npm install -g change-source
+npm install -g @whtg/change-source
 # Then use
 change-source
 ```
