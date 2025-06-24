@@ -3,7 +3,7 @@ change-source/README.md
 
 [English | 中文]
 
-A simple and interactive CLI tool to quickly switch package manager registries (npm, yarn, pnpm), supporting both English and Chinese.  
+A simple and interactive CLI tool to quickly switch package manager registries (npm, yarn, pnpm), supporting both English and Chinese.
 一款简单交互式的包管理器源一键切换工具，支持 npm/yarn/pnpm，支持中英文界面。
 
 ---
@@ -56,7 +56,6 @@ npx @whtg/change-source --all --to taobao    # Switch all sources to Taobao regi
 npx @whtg/change-source --npm --to official  # Switch npm to official registry
 
 npx @whtg/change-source --list      # Show available registries
-npx @whtg/change-source --manual    # Manually input a custom registry URL
 
 npx @whtg/change-source --lang en   # Force interface language to English
 npx @whtg/change-source --lang zh   # 切换为中文界面
@@ -76,7 +75,6 @@ npx @whtg/change-source --all --to taobao    # 全部切换为淘宝源
 npx @whtg/change-source --npm --to official  # 只切 npm 源为官方源
 
 npx @whtg/change-source --list      # 列出可用源
-npx @whtg/change-source --manual    # 手动输入自定义源地址
 
 npx @whtg/change-source --lang zh   # 强制切换中文界面
 npx @whtg/change-source --lang en   # Switch to English interface
@@ -97,10 +95,10 @@ npx @whtg/change-source --show      # 查看所有包管理器当前源地址
 
 ## FAQ
 
-**Q: Is it safe to use? 会破坏我的配置吗？**  
+**Q: Is it safe to use? 会破坏我的配置吗？**
 A: This tool only runs official config set commands like `npm config set registry ...` and does NOT delete or corrupt your other settings. 本工具只会调用官方的 registry 配置命令，并不会破坏你的其他设置。
 
-**Q: How does the language switch work? 语言如何切换？**  
+**Q: How does the language switch work? 语言如何切换？**
 A: The tool auto-detects your system with LANG/LC_ALL or you may use `--lang zh` or `--lang en` explicitly. 工具会自动检测环境变量，也可通过 --lang 参数强制指定。
 
 ---
