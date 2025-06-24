@@ -1,0 +1,35 @@
+{
+  "name": "change-source",
+  "version": "1.0.0",
+  "description": "A CLI tool to switch registries for npm, yarn, and pnpm easily, supporting both English and Chinese.",
+  "main": "src/index.js",
+  "module": "src/index.js",
+  "type": "module",
+  "bin": {
+    "change-source": "./bin/change-source.js"
+  },
+  "scripts": {
+    "start": "node bin/change-source.js"
+  },
+  "keywords": [
+    "registry",
+    "source",
+    "cli",
+    "npm",
+    "yarn",
+    "pnpm",
+    "mirror",
+    "switch",
+    "one-click"
+  ],
+  "author": "Your Name",
+  "license": "MIT",
+  "dependencies": {
+    "commander": "^11.1.0",
+    "inquirer": "^9.2.12",
+    "chalk": "^5.3.0"
+  },
+  "engines": {
+    "node": ">=14"
+  }
+}

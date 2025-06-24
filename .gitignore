@@ -1,0 +1,34 @@
+change-source/.gitignore
+# Node.js dependencies
+node_modules/
+
+# Optional npm cache, logs
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+package-lock.json
+yarn.lock
+pnpm-lock.yaml
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# VSCode settings
+.vscode/
+
+# Logs
+*.log
+
+# Tests/coverage
+coverage/
+.nyc_output/
+
+# env files
+.env
+.env.*
+
+# build output (if any)
+dist/
+build/
