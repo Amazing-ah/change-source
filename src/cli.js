@@ -5,6 +5,44 @@ import chalk from 'chalk';
 import { getRegistryList, getSetRegistryCommand } from './registry.js';
 import { t, LOCALES, detectLanguage } from './i18n.js';
 
+import fs from 'node:fs';
+import os from 'node:os';
+import path from 'node:path';
+
+// XDG_CONFIG_HOME 规范或 ~/.config/change-source/custom-registries.json
+const CONFIG_BASE = process.env.XDG_CONFIG_HOME
+  ? process.env.XDG_CONFIG_HOME
+  : path.join(os.homedir(), '.config');
+const CUSTOM_CONFIG_DIR = path.join(CONFIG_BASE, 'change-source');
+const CUSTOM_REGISTRY_PATH = path.join(CUSTOM_CONFIG_DIR, 'custom-registries.json');
+
+// 读取用户自定义 registry（返回 url 数组）
+function loadCustomRegistries() {
+  if (!fs.existsSync(CUSTOM_REGISTRY_PATH)) return [];
+  try {
+    const list = JSON.parse(fs.readFileSync(CUSTOM_REGISTRY_PATH, 'utf-8'));
+    return Array.isArray(list) ? list : [];
+  } catch { return []; }
+}
+
+// 写入用户自定义 registry，去重保存
+function saveCustomRegistry(newUrl) {
+  if (!newUrl) return;
+  const prev = loadCustomRegistries();
+  if (prev.includes(newUrl)) return;
+  // 保证 config 目录存在
+  if (!fs.existsSync(CUSTOM_CONFIG_DIR)) fs.mkdirSync(CUSTOM_CONFIG_DIR, { recursive: true });
+  fs.writeFileSync(CUSTOM_REGISTRY_PATH, JSON.stringify([...prev, newUrl], null, 2), 'utf-8');
+}
+
+// 删除若干 registry
+function deleteCustomRegistries(urlsToDelete) {
+  const prev = loadCustomRegistries();
+  const filtered = prev.filter(url => !urlsToDelete.includes(url));
+  if (!fs.existsSync(CUSTOM_CONFIG_DIR)) fs.mkdirSync(CUSTOM_CONFIG_DIR, { recursive: true });
+  fs.writeFileSync(CUSTOM_REGISTRY_PATH, JSON.stringify(filtered, null, 2), 'utf-8');
+}
+
 /**
  * 解析命令行参数
  * return: {all, npm, yarn, pnpm, to, lang, list}
@@ -31,6 +69,7 @@ function parseArguments() {
 
     .option('--show', isZh ? '显示当前各包管理器的源' : 'Show current registries')
     .option('--lang <lang>', isZh ? '语言切换: en 或 zh（默认自动）' : 'Set interface language: en or zh (auto-detect by default)')
+    .option('-d, --delete', isZh ? '删除自定义源' : 'Delete custom registries')
     .helpOption('-h, --help', isZh ? '显示帮助信息' : 'Show help')
     .addHelpText(
       'after',
@@ -43,12 +82,14 @@ function parseArguments() {
   $ npx change-source --list
   $ npx change-source --show
   $ npx change-source --lang zh
+  $ npx change-source --delete     # 删除自定义源
 
 说明:
   --all      切换全部（npm/yarn/pnpm）
   --to       可为源 key（official/taobao/cnpm）或完整 URL
   --show     一键显示所有包管理器当前源
   --lang     自动侦测，或手工指定（en/zh）
+  +  --delete   进入自定义源删除界面
 
 change-source 让你快速一键切换三大包管理器源，命令行中英文自动。
 `
@@ -60,12 +101,14 @@ Examples (recommended npx usage):
   $ npx change-source --list
   $ npx change-source --show
   $ npx change-source --lang en
+  $ npx change-source --delete    # Delete custom registries
 
 Description:
   --all      Switch all (npm/yarn/pnpm)
   --to       Key (official/taobao/cnpm) or full URL for registry
   --show     Show all current registries
   --lang     Auto-detect or manually set (en/zh)
+  +  --delete   Enter custom registries delete menu
 
 Change-source lets you quickly change registries for npm, yarn, pnpm. All commands auto describe in English or Chinese.
 `
@@ -143,15 +186,30 @@ async function chooseManagers(lang) {
 async function chooseRegistry(manager, lang) {
   const inquirer = await getInquirer();
   const registryList = getRegistryList(manager === 'all' ? 'npm' : manager, lang);
-  const choices = [
-    ...registryList.map(item => ({
-      name: `${item.label} (${item.url})`,
-      value: item.key,
-    })),
-    { name: t('manualInput', lang), value: 'manual' },
-  ];
 
-  // 动态确定 manager label
+  // 获取本地自定义 registry
+  const customUrls = loadCustomRegistries();
+
+  // 合并 Candidate 选项
+ const choices = [
+   ...registryList.map(item => ({
+     name: `${item.label} (${item.url})`,
+     value: item.key,
+   })),
+   ...(customUrls.length > 0
+     ? [
+         new inquirer.Separator(lang === 'zh' ? '自定义地址' : 'Custom addresses'),
+         ...customUrls.map(url => ({
+           name: url,
+           value: url,
+         })),
+         { name: lang === 'zh' ? '🗑️ 删除自定义地址' : '🗑️ Delete custom registries', value: 'delete_custom' }
+       ]
+     : []
+   ),
+   { name: t('manualInput', lang), value: 'manual' },
+ ];
+
   let label = manager === 'all'
     ? (lang === 'zh' ? '全部' : 'All')
     : t(manager, lang);
@@ -164,17 +222,46 @@ async function chooseRegistry(manager, lang) {
       choices,
     }
   ]);
-  if (answer.registry === 'manual') {
-    const manual = await inquirer.prompt([
-      {
-        type: 'input',
-        name: 'custom',
-        message: t('enterCustom', lang)
-      }
-    ]);
-    return manual.custom;
-  }
-  return registryList.find(r => r.key === answer.registry).url;
+
+ if (answer.registry === 'delete_custom') {
+   if (!customUrls.length) {
+     console.log(lang === 'zh' ? '暂无自定义地址' : 'No custom registry found.');
+     return await chooseRegistry(manager, lang); // 回到主菜单
+   }
+   const toDelete = await inquirer.prompt([
+     {
+       type: 'checkbox',
+       name: 'todelete',
+       message: lang === 'zh' ? '选择要删除的自定义源' : 'Select custom registries to delete',
+       choices: customUrls
+     }
+   ]);
+   if (toDelete.todelete.length) {
+     deleteCustomRegistries(toDelete.todelete);
+     console.log(
+       lang === 'zh'
+         ? '已删除所选自定义地址。'
+         : 'Selected custom registries deleted.'
+     );
+   }
+   return await chooseRegistry(manager, lang); // 删除后重新进入选择主流程
+ }
+
+ if (answer.registry === 'manual') {
+   const manual = await inquirer.prompt([
+     {
+       type: 'input',
+       name: 'custom',
+       message: t('enterCustom', lang)
+     }
+   ]);
+   // 自动保存
+   saveCustomRegistry(manual.custom);
+   return manual.custom;
+ }
+ // 判断是自定义 url(直接给的是 url)，还是已内置的 key
+ const found = registryList.find(r => r.key === answer.registry);
+ return found ? found.url : answer.registry;
 }
 
 /**
@@ -182,13 +269,21 @@ async function chooseRegistry(manager, lang) {
  * @param {string} lang
  */
 function showRegistryList(lang) {
-  ['npm', 'yarn', 'pnpm'].forEach(manager => {
+  ['npm', 'yarn', 'pnpm'].forEach((manager) => {
     const list = getRegistryList(manager, lang);
     console.log(chalk.bold(`${t('listRegistries', lang)} [${manager}]:`));
     list.forEach(item => {
       console.log(`  ${item.label.padEnd(10)}:  ${chalk.green(item.url)}`);
     });
   });
+  // 单独展示自定义 registry
+  const customUrls = loadCustomRegistries();
+  if (customUrls.length) {
+    console.log(chalk.bold(lang === 'zh' ? '\n自定义地址列表：' : '\nCustom address list:'));
+    customUrls.forEach(url => {
+      console.log(`  ${chalk.yellow(url)}`);
+    });
+  }
 }
 
 /**
@@ -258,6 +353,14 @@ async function showCurrentRegistries(lang) {
  */
 async function run() {
   const args = parseArguments();
+
+  if (args.delete) {
+    // 先选择语言，再进入自定义源删除，不走其它逻辑
+    const lang = await chooseLanguage(args.lang);
+    await deleteCustomRegistryInteractive(lang);
+    return;
+  }
+
   const lang = await chooseLanguage(args.lang);
 
   if (args.show) {
@@ -309,6 +412,49 @@ async function run() {
   console.log('\n' + chalk.green(t('done', lang)));
 }
 
+/**
+ * 交互式管理/删除自定义 registry
+ */
+async function deleteCustomRegistryInteractive(lang) {
+  const inquirer = await getInquirer();
+  const customUrls = loadCustomRegistries();
+  if (!customUrls.length) {
+    console.log(lang === 'zh' ? '暂无自定义地址可删除。' : 'No custom registry addresses to delete.');
+    return;
+  }
+  const { mode } = await inquirer.prompt([
+    {
+      type: 'list',
+      name: 'mode',
+      message: lang === 'zh' ? '选择操作：' : 'Choose action:',
+      choices: [
+        { name: lang === 'zh' ? '批量选择删除' : 'Select one or more to delete', value: 'select' },
+        { name: lang === 'zh' ? '全部删除' : 'Delete all', value: 'all' }
+      ]
+    }
+  ]);
+  if (mode === 'all') {
+    deleteCustomRegistries(customUrls);
+    console.log(lang === 'zh' ? '已全部删除自定义地址。' : 'All custom addresses deleted.');
+    return;
+  }
+  // 批量多选删除
+  const { toDelete } = await inquirer.prompt([
+    {
+      type: 'checkbox',
+      name: 'toDelete',
+      message: lang === 'zh' ? '选择要删除的自定义源' : 'Select custom registries to delete',
+      choices: customUrls
+    }
+  ]);
+  if (toDelete.length) {
+    deleteCustomRegistries(toDelete);
+    console.log(lang === 'zh' ? '已删除所选自定义地址。' : 'Selected custom addresses deleted.');
+  } else {
+    console.log(lang === 'zh' ? '未选择任何地址，未删除。' : 'No address selected, nothing deleted.');
+  }
+}
+
 export {
   run,
   parseArguments,
@@ -318,4 +464,5 @@ export {
   showRegistryList,
   doSwitch,
   showCurrentRegistries,
+  deleteCustomRegistryInteractive,
 };

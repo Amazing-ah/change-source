@@ -13,7 +13,7 @@ A simple and interactive CLI tool to quickly switch package manager registries (
 - One-click switch registry for npm, yarn, pnpm
 - Interactive CLI, easy to use
 - Built-in English and Chinese support (auto-detects system, or specify via flag)
-- Supports common registries (official, Taobao, CNPM, etc) and custom registries
+- Supports common registries (official, Taobao, CNPM, etc) and custom registries (custom registries are persistent; you can delete them via `--delete` / `-d`)
 - Fast npx usage, or install globally
 
 ---
@@ -56,6 +56,9 @@ npx @whtg/change-source --all --to taobao    # Switch all sources to Taobao regi
 npx @whtg/change-source --npm --to official  # Switch npm to official registry
 
 npx @whtg/change-source --list      # Show available registries
+npx @whtg/change-source --delete    # Delete custom registries
+
+npx @whtg/change-source -d          # (shorthand, same as --delete)
 
 npx @whtg/change-source --lang en   # Force interface language to English
 npx @whtg/change-source --lang zh   # 切换为中文界面
@@ -75,6 +78,9 @@ npx @whtg/change-source --all --to taobao    # 全部切换为淘宝源
 npx @whtg/change-source --npm --to official  # 只切 npm 源为官方源
 
 npx @whtg/change-source --list      # 列出可用源
+
+npx @whtg/change-source --delete    # 删除自定义源
+npx @whtg/change-source -d          # （短写，与 --delete 效果一致）
 
 npx @whtg/change-source --lang zh   # 强制切换中文界面
 npx @whtg/change-source --lang en   # Switch to English interface
