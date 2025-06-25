@@ -20,24 +20,20 @@ A simple and interactive CLI tool to quickly switch package manager registries (
 
 ## Installation 安装
 
-**Recommended 推荐用法（无需全局安装、使用最新版）：**
-
-```shell
-npx @whtg/change-source
-```
-
-或
-
-```shell
-npx @whtg/change-source@latest
-```
-
-**(Optionally) install globally 也可以全局安装**
+**Recommended 推荐用法（全局安装）：**
 
 ```shell
 npm install -g @whtg/change-source
-# Then use
+# 然后使用
 change-source
+```
+
+**或（无需全局安装，临时使用最新版）：**
+
+```shell
+npx @whtg/change-source
+# 或指定最新版
+npx @whtg/change-source@latest
 ```
 
 ---
@@ -46,46 +42,94 @@ change-source
 
 ### English
 
+#### Global Install Usage (Recommended)
+
 ```shell
-npx @whtg/change-source            # Interactive registry switch for all (npm/yarn/pnpm)
-npx @whtg/change-source --npm      # Only switch npm registry
-npx @whtg/change-source --yarn     # Only switch yarn registry
-npx @whtg/change-source --pnpm     # Only switch pnpm registry
+change-source                   # Interactive registry switch for all (npm/yarn/pnpm)
+change-source --npm             # Only switch npm registry
+change-source --yarn            # Only switch yarn registry
+change-source --pnpm            # Only switch pnpm registry
 
-npx @whtg/change-source --all --to taobao    # Switch all sources to Taobao registry
-npx @whtg/change-source --npm --to official  # Switch npm to official registry
+change-source --all --to taobao        # Switch all sources to Taobao registry
+change-source --npm --to official      # Switch npm to official registry
 
-npx @whtg/change-source --list      # Show available registries
-npx @whtg/change-source --delete    # Delete custom registries
+change-source --list           # Show available registries
+change-source --delete         # Delete custom registries
 
-npx @whtg/change-source -d          # (shorthand, same as --delete)
+change-source -d               # (shorthand, same as --delete)
 
-npx @whtg/change-source --lang en   # Force interface language to English
-npx @whtg/change-source --lang zh   # 切换为中文界面
+change-source --lang en        # Force interface language to English
+change-source --lang zh        # Switch to Chinese interface
 
-npx @whtg/change-source --show      # Show current registries for all managers
+change-source --show           # Show current registries for all managers
+```
+
+#### npx (No Global Install)
+
+```shell
+npx @whtg/change-source                   # Interactive registry switch for all (npm/yarn/pnpm)
+npx @whtg/change-source --npm             # Only switch npm registry
+npx @whtg/change-source --yarn            # Only switch yarn registry
+npx @whtg/change-source --pnpm            # Only switch pnpm registry
+
+npx @whtg/change-source --all --to taobao        # Switch all sources to Taobao registry
+npx @whtg/change-source --npm --to official      # Switch npm to official registry
+
+npx @whtg/change-source --list           # Show available registries
+npx @whtg/change-source --delete         # Delete custom registries
+
+npx @whtg/change-source -d               # (shorthand, same as --delete)
+
+npx @whtg/change-source --lang en        # Force interface language to English
+npx @whtg/change-source --lang zh        # Switch to Chinese interface
+
+npx @whtg/change-source --show           # Show current registries for all managers
 ```
 
 ### 中文
 
+#### 全局安装命令（推荐）
+
 ```shell
-npx @whtg/change-source            # 进入交互，一键切换全部源
-npx @whtg/change-source --npm      # 只切换 npm 源
-npx @whtg/change-source --yarn     # 只切换 yarn 源
-npx @whtg/change-source --pnpm     # 只切换 pnpm 源
+change-source                   # 进入交互，一键切换全部源
+change-source --npm             # 只切换 npm 源
+change-source --yarn            # 只切换 yarn 源
+change-source --pnpm            # 只切换 pnpm 源
 
-npx @whtg/change-source --all --to taobao    # 全部切换为淘宝源
-npx @whtg/change-source --npm --to official  # 只切 npm 源为官方源
+change-source --all --to taobao        # 全部切换为淘宝源
+change-source --npm --to official      # 只切 npm 源为官方源
 
-npx @whtg/change-source --list      # 列出可用源
+change-source --list           # 列出可用源
 
-npx @whtg/change-source --delete    # 删除自定义源
-npx @whtg/change-source -d          # （短写，与 --delete 效果一致）
+change-source --delete         # 删除自定义源
+change-source -d               # （短写，与 --delete 效果一致）
 
-npx @whtg/change-source --lang zh   # 强制切换中文界面
-npx @whtg/change-source --lang en   # Switch to English interface
+change-source --lang zh        # 强制切换中文界面
+change-source --lang en        # Switch to English interface
 
-npx @whtg/change-source --show      # 查看所有包管理器当前源地址
+change-source --show           # 查看所有包管理器当前源地址
+```
+
+#### npx 使用（无需全局安装）
+
+```shell
+npx @whtg/change-source                   # 进入交互，一键切换全部源
+npx @whtg/change-source --npm             # 只切换 npm 源
+npx @whtg/change-source --yarn            # 只切换 yarn 源
+npx @whtg/change-source --pnpm            # 只切换 pnpm 源
+
+npx @whtg/change-source --all --to taobao        # 全部切换为淘宝源
+npx @whtg/change-source --npm --to official      # 只切 npm 源为官方源
+
+npx @whtg/change-source --list           # 列出可用源
+
+npx @whtg/change-source --delete         # 删除自定义源
+npx @whtg/change-source -d               # （短写，与 --delete 效果一致）
+
+npx @whtg/change-source --lang zh        # 强制切换中文界面
+npx @whtg/change-source --lang en        # 切换为英文界面
+
+npx @whtg/change-source --show           # 查看所有包管理器当前源地址
 ```
 
 ---
@@ -120,3 +164,8 @@ Feel free to submit Pull Requests for more features or new registries.
 ## License
 
 MIT
+
+# 更新日志
+
+## 1.0.5
+- 优化文档说明：精简结构和描述，提升可读性。
